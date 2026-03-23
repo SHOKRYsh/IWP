@@ -1,0 +1,10 @@
+{
+    "Auth": true,
+    "Notification": true,
+    "Children": true,
+    "Subscription": true,
+    "Settings": true,
+    "LifeStyle": true,
+    "Task": true,
+    "Expense": true
+}
