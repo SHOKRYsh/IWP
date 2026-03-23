@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
         
         $UserRole = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
 
-        $AdminRole = Role::firstOrCreate(['name' => 'SuperAdmin', 'guard_name' => 'web']);
+        $AdminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $AdminRole->syncPermissions($permissions);
 
         $superAdminUser = User::updateOrCreate([
