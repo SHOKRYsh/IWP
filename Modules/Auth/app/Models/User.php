@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Http\Traits\ArchiveTrait;
 use Modules\Children\Models\Child;
+use Modules\LifeStyle\Models\LifeElement;
 use Modules\LifeStyle\Models\LifeStyle;
 use Modules\Subscription\Models\Subscription;
 use Modules\Subscription\Models\Billing;
@@ -66,5 +67,10 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\Access\
     public function lifeStyle()
     {
         return $this->belongsTo(LifeStyle::class);
+    }
+
+    public function lifeElements()
+    {
+        return $this->belongsToMany(LifeElement::class, 'life_element_user');
     }
 }

@@ -56,6 +56,10 @@ class LifeElementController extends Controller
 
         $element = LifeElement::create($validated);
 
+        if (!$user->hasRole('Admin')) {
+            $user->lifeElements()->sync($element->id);
+        }
+
         return $this->respondCreated($element, 'LifeElement created successfully');
     }
 

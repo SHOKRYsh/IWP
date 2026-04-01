@@ -36,4 +36,9 @@ class LifeElement extends Model
     {
         return $this->hasMany(LifeTaskType::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'life_element_user');
+    }
 }

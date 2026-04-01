@@ -43,7 +43,7 @@ class UserController extends Controller
 
     public function showProfile()
     {
-        $user = User::with('children', 'lifeStyle')->find(Auth::id());
+        $user = User::with('children', 'lifeStyle','lifeElements')->find(Auth::id());
         return $this->respondOk($user, 'User Profile');
     }
 
@@ -58,6 +58,8 @@ class UserController extends Controller
             'gender' => ['nullable', Rule::in(['male','female'])],
             'marital_status' => ['nullable', Rule::in(['single','married','divorced','widowed'])],
             'life_style_id' => 'nullable|exists:life_styles,id',
+            'life_element_ids' => 'nullable|array',
+            'life_element_ids.*' => 'exists:life_elements,id',
         ]);
 
         $user = User::find(Auth::id());
@@ -83,6 +85,10 @@ class UserController extends Controller
             'marital_status' => $request->marital_status ?? $user->marital_status,
             'life_style_id' => $request->life_style_id ?? $user->life_style_id,
         ]);
+
+        if($request->has('life_element_ids') && is_array($request->input('life_element_ids'))) {
+            $user->lifeElements()->sync($request->input('life_element_ids'));
+        }
 
         return $this->respondOk($user, 'Profile updated successfully.');
     }

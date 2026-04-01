@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\Auth\Models\User;
+use Modules\Children\Models\Child;
 use Modules\Subscription\Models\Subscription;
 use Spatie\Permission\Models\Role;
 
@@ -56,6 +57,16 @@ class AuthService
                 'started_at' => now(),
                 'ends_at' => now()->addDays(7),
             ]);
+
+            if ($request->has('children') && is_array($request->input('children'))) {
+                foreach ($request->input('children') as $childData) {
+                    $user->children()->create($childData);
+                }
+            }
+
+            if ($request->has('life_element_ids') && is_array($request->input('life_element_ids'))) {
+                $user->lifeElements()->sync($request->input('life_element_ids'));
+            }
 
             DB::commit();
 
