@@ -14,22 +14,33 @@ class LifeElementController extends Controller
         $user = auth('sanctum')->user();
 
         $query = LifeElement::with(['lifeStyle', 'user', 'taskTypes' => function ($q) use ($user) {
-            if (!$user->hasRole('Admin')) {
-                $q->where('user_id', $user->id)
-                    ->orWhereNull('user_id')
-                    ->orWhereHas('user', function ($u) {
-                        $u->hasRole('Admin');
-                    });
+            if (!$user || !$user->hasRole('Admin')) {
+                $q->where(function ($qq) use ($user) {
+                    if ($user) {
+                        $qq->where('user_id', $user->id);
+                    }
+                    $qq->orWhereNull('user_id')
+                       ->orWhereHas('user', function ($u) {
+                           $u->whereHas('roles', function ($r) {
+                               $r->where('name', 'Admin');
+                           });
+                       });
+                });
             }
         }]);
 
-        if (!$user->hasRole('Admin')) {
+        if (!$user || !$user->hasRole('Admin')) {
             $query->where(function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                    ->orWhereNull('user_id')
-                    ->orWhereHas('user', function ($u) {
-                        $u->hasRole('Admin');
+                if ($user) {
+                    $q->where('user_id', $user->id);
+                }
+
+                $q->orWhereNull('user_id')
+                ->orWhereHas('user', function ($u) {
+                    $u->whereHas('roles', function ($r) {
+                        $r->where('name', 'Admin');
                     });
+                });
             });
         }
 
@@ -67,12 +78,18 @@ class LifeElementController extends Controller
     {
         $user = auth('sanctum')->user();
         $element = LifeElement::with(['lifeStyle', 'user', 'taskTypes' => function ($q) use ($user) {
-            if (!$user->hasRole('Admin')) {
-                $q->where('user_id', $user->id)
-                    ->orWhereNull('user_id')
-                    ->orWhereHas('user', function ($u) {
-                        $u->hasRole('Admin');
-                    });
+            if (!$user || !$user->hasRole('Admin')) {
+                $q->where(function ($qq) use ($user) {
+                    if ($user) {
+                        $qq->where('user_id', $user->id);
+                    }
+                    $qq->orWhereNull('user_id')
+                       ->orWhereHas('user', function ($u) {
+                           $u->whereHas('roles', function ($r) {
+                               $r->where('name', 'Admin');
+                           });
+                       });
+                });
             }
         }])->findOrFail($id);
 
